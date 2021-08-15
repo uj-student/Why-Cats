@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">WhyCats</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="image_view_description">Image of Cat to be displayed here if available</string>
+    <string name="description_example">Thomas "Tom" Cat is a fictional character and one of the two titular main protagonists (the other being Jerry Mouse) in Metro-Goldwyn-Mayer\'s series of Tom and Jerry theatrical animated short films</string>
+    <string name="title_home">Home</string>
+    <string name="title_upload">Upload Image</string>
+    <string name="title_upload_history">My Upload History</string>
+    <string name="error_message">An error occurred</string>
+    <string name="tap_to_retry">Tap to Retry</string>
+    <string name="cat_image_description">Image of cat will be displayed here if available.</string>
+    <string name="name">Name: %1$s</string>
+    <string name="description">Description: %1$s</string>
+    <string name="origin">Origin: %1$s</string>
+    <string name="wiki_page_url">For more details visit: %1$s</string>
+    <string name="upload_from_gallery">Select from gallery</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="upload_image">Upload Picture</string>
+    <string name="cat_image_upload_menu">Upload Cat Image</string>
+    <string name="image_preview_description">Image Preview will be displayed here after user captures or selects cat image</string>
+
+</resources>

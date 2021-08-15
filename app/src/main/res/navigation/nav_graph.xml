@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.whyCats.view.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_uploadImageFragment"
+            app:destination="@id/uploadImageFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_catDetailFragment"
+            app:destination="@id/catDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_uploadHistoryFragment2"
+            app:destination="@id/uploadHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadImageFragment"
+        android:name="com.example.whyCats.view.ImageUploadFragment"
+        android:label="Upload Image"
+        tools:layout="@layout/fragment_image_upload" >
+        <action
+            android:id="@+id/action_uploadImageFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/catDetailFragment"
+        android:name="com.example.whyCats.view.CatDetailFragment"
+        android:label="Cat Preview"
+        tools:layout="@layout/fragment_cat_detail">
+        <argument
+            android:name="catData"
+            app:argType="com.example.whyCats.model.Cat" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadHistoryFragment"
+        android:name="com.example.whyCats.view.UploadHistoryFragment"
+        android:label="fragment_upload_history"
+        tools:layout="@layout/fragment_upload_history" >
+        <action
+            android:id="@+id/action_uploadHistoryFragment_to_catDetailFragment"
+            app:destination="@id/catDetailFragment" />
+        <argument
+            android:name="uploadHistoryResponseData"
+            app:argType="com.example.whyCats.model.UploadHistoryResponse" />
+    </fragment>
+</navigation>
