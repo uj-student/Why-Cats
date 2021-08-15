@@ -11,11 +11,9 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.whyCats.BuildConfig
 import com.example.whyCats.R
 import com.example.whyCats.databinding.FragmentImageUploadBinding
-import com.example.whyCats.model.UploadResponse
 import com.example.whyCats.util.showSnackBarMessage
 import com.example.whyCats.viewModel.ImageUploadViewModel
 import java.io.File
@@ -57,9 +55,6 @@ class ImageUploadFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { activity ->
-            activity.title = getString(R.string.upload_image)
-        }
         fragmentUploadImageBinding?.takePictureButton?.setOnClickListener {
             dispatchTakePictureIntent()
         }

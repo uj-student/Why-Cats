@@ -1,10 +1,7 @@
 package com.example.whyCats.model.data
 
-import android.view.View
-import com.bumptech.glide.util.Util
 import com.example.whyCats.model.network.NetworkRepo
 import com.example.whyCats.model.network.NetworkService
-import com.example.whyCats.util.showSnackBarMessage
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
