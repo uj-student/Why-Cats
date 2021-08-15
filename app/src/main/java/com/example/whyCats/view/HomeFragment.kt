@@ -70,6 +70,8 @@ class HomeFragment : Fragment() {
                 loadState.source.refresh is LoadState.Error
 
         }
+
+        fragmentHomeBinding?.btnRetry?.setOnClickListener { adapter.retry() }
     }
 
     private fun submitData(adapter: CatAdapter) {

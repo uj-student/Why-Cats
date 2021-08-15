@@ -22,9 +22,7 @@ class GetData : PagingSource<Int, Cat>() {
             val response = apiClient?.getAllCatImages(nextPageNumber)
             // filter out the cats with no details, description etc
             val filteredList = response?.filter { predicate ->
-                predicate?.breeds!!.let {
-                    it.isNotEmpty() == true
-                }
+                predicate.breeds!!.isNotEmpty()
             }
 
             //not using a db so don't want to request too many cats in memory so limit to the first 10 pages

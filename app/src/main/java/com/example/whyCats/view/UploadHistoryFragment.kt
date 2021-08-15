@@ -85,6 +85,7 @@ class UploadHistoryFragment : Fragment() {
                 loadState.source.refresh is LoadState.Error
 
         }
+        fragmentUploadHistoryBinding?.btnRetry?.setOnClickListener { adapter.retry() }
     }
 
     private fun submitData(adapter: UploadHistoryAdapter) {
