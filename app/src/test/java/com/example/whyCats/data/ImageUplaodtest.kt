@@ -9,8 +9,10 @@ import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.MultipartBody
+import okhttp3.internal.notify
 import org.junit.Test
 import java.io.File
 
@@ -26,12 +28,9 @@ class PostDataTest: BaseUnitTest(){
 
     @Test
     fun sendImageTest() = runBlockingTest{
-        println("Hello")
-        PostData.sendImage(mockFile, {onSuccess}, {onFailure}).first()
-        println("Hello 2")
+        PostData.sendImage(mockFile, {onSuccess}, {onFailure}).single()
 
         verify(apiClient, times(1)).postCatImage("", mockMultipartBody)
-        println("Hello3")
-
+        verify(apiClient, times(1)).notify()
     }
 }
