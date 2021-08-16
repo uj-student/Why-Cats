@@ -8,11 +8,15 @@ import java.io.File
 
 class ImageUploadViewModel : ViewModel() {
 
-    fun uploadCatImage(catImagePath: String, onUploadSuccess: () -> Unit) {
+    fun uploadCatImage(
+        catImagePath: String,
+        onUploadSuccess: () -> Unit,
+        onUploadFail: () -> Unit
+    ) {
         viewModelScope.launch {
-            PostData.sendImage(File(catImagePath)) {
-                onUploadSuccess.invoke()
-            }
+            PostData.sendImage(File(catImagePath),
+                { onUploadSuccess.invoke() },
+                { onUploadFail.invoke() })
         }
     }
 }

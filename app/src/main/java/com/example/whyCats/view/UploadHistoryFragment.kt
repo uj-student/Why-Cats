@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,9 +35,6 @@ class UploadHistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { activity ->
-            activity.title = getString(R.string.title_upload_history)
-        }
         setUpRecyclerView()
     }
 
@@ -85,6 +81,7 @@ class UploadHistoryFragment : Fragment() {
                 loadState.source.refresh is LoadState.Error
 
         }
+        fragmentUploadHistoryBinding?.btnRetry?.setOnClickListener { adapter.retry() }
     }
 
     private fun submitData(adapter: UploadHistoryAdapter) {

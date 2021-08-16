@@ -1,13 +1,15 @@
 package com.example.whyCats
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.whyCats.databinding.ActivityMainBinding
+import androidx.navigation.ui.setupActionBarWithNavController
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +23,11 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = findNavController(R.id.nav_host_fragment)
         setupNav(navHostFragment)
+
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.homeFragment, R.id.uploadImageFragment, R.id.uploadHistoryFragment)
+        )
+        setupActionBarWithNavController(navHostFragment, appBarConfiguration)
     }
 
     private fun setupNav(navController: NavController) {

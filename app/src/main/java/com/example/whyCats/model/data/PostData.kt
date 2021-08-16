@@ -1,8 +1,8 @@
 package com.example.whyCats.model.data
 
-import com.example.whyCats.model.UploadResponse
 import com.example.whyCats.model.network.NetworkRepo
 import com.example.whyCats.model.network.NetworkService
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -18,14 +18,18 @@ object PostData {
     private val interceptor = NetworkRepo.getInterceptor()
     private val apiClient = NetworkRepo.getClient(interceptor)?.create(NetworkService::class.java)
 
-    suspend fun sendImage(uploadFile: File, onSuccess: () -> Unit) =
+    suspend fun sendImage(uploadFile: File, onSuccess: () -> Unit, onError: () -> Unit) =
         try {
             flow {
                 // not sure how or why this works seeing as I am sending .jpg. image/* doesn't work
-                val requestFile: RequestBody = uploadFile.asRequestBody("image/png".toMediaTypeOrNull())
+                val requestFile: RequestBody =
+                    uploadFile.asRequestBody("image/png".toMediaTypeOrNull())
 
-                val multipartBody = MultipartBody.Part.createFormData(name="file", filename=uploadFile.path,
-                    body=requestFile)
+                val multipartBody = MultipartBody.Part.createFormData(
+                    name = "file",
+                    filename = uploadFile.path,
+                    body = requestFile
+                )
 
                 val response = apiClient?.postCatImage(file = multipartBody)
                 response?.let {
@@ -34,6 +38,8 @@ object PostData {
                         onSuccess.invoke()
                     }
                 }
+            }.catch {
+                onError.invoke()
             }.single()
         } catch (e: IOException) {
             e.printStackTrace()

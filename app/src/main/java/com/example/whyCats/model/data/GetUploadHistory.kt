@@ -3,8 +3,6 @@ package com.example.whyCats.model.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.whyCats.model.UploadHistoryResponse
-import com.example.whyCats.model.Cat
-import com.example.whyCats.model.UploadResponse
 import com.example.whyCats.model.network.NetworkRepo
 import com.example.whyCats.model.network.NetworkService
 import retrofit2.HttpException

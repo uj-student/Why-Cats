@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.whyCats.view.HomeFragment"
-        android:label="fragment_home"
+        android:label="WhyCats"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_uploadImageFragment"
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/uploadHistoryFragment"
         android:name="com.example.whyCats.view.UploadHistoryFragment"
-        android:label="fragment_upload_history"
+        android:label="My Uploads"
         tools:layout="@layout/fragment_upload_history" >
         <action
             android:id="@+id/action_uploadHistoryFragment_to_catDetailFragment"
