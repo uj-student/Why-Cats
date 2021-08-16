@@ -25,7 +25,8 @@ class GetData : PagingSource<Int, Cat>() {
                 predicate.breeds!!.isNotEmpty()
             }
 
-            //not using a db so don't want to request too many cats in memory so limit to the first 10 pages
+            //not using a db so don't want to request and keep too many cats in memory
+            // so limit to the first 5 pages
             val nextKey =
                 if (response?.isNotEmpty() == true && nextPageNumber < 5) nextPageNumber + 1 else null
 
