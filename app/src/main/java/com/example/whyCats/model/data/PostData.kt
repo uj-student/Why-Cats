@@ -21,7 +21,7 @@ object PostData {
     private val apiClient = NetworkRepo.getClient(interceptor)?.create(NetworkService::class.java)
 
     suspend fun sendImage(uploadFile: File, onSuccess: () -> Unit, onError: () -> Unit) =
-//        try {
+        try {
             flow {
                 // not sure how or why this works seeing as I am sending .jpg. image/* doesn't work
                 val requestFile: RequestBody =
@@ -34,24 +34,23 @@ object PostData {
                 )
 
                 val response = apiClient?.postCatImage(file = multipartBody)
-                emit(response)
-//                response?.let {
-//                    if (it.approved == 1) {
-//                        emit(it)
-//                        onSuccess.invoke()
-//                    } else {
-//                        onError.invoke()
-//                    }
-//                }
+                response?.let {
+                    if (it.approved == 1) {
+                        emit(it)
+                        onSuccess.invoke()
+                    } else {
+                        onError.invoke()
+                    }
+                }
             }.catch {
                 emit(UploadResponse())
                 onError.invoke()
             }
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        } catch (e: HttpException) {
-//            e.printStackTrace()
-//        } catch (e: NoSuchElementException) {
-//            e.printStackTrace()
-//        }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+        } catch (e: NoSuchElementException) {
+            e.printStackTrace()
+        }
 }
