@@ -18,5 +18,6 @@
     <string name="upload_image">Upload Picture</string>
     <string name="cat_image_upload_menu">Upload Cat Image</string>
     <string name="image_preview_description">Image Preview will be displayed here after user captures or selects cat image</string>
+    <string name="upload_successful">Upload Successful</string>
 
 </resources>

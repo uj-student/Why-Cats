@@ -45,7 +45,7 @@ object PostData {
             }.catch {
                 emit(UploadResponse())
                 onError.invoke()
-            }
+            }.single()
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: HttpException) {
