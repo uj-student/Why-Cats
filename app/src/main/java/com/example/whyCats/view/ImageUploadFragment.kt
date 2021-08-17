@@ -133,6 +133,9 @@ class ImageUploadFragment : Fragment() {
             fragmentUploadImageBinding?.pbNetworkCall?.visibility = View.GONE
             view?.findNavController()
                 ?.navigate(ImageUploadFragmentDirections.actionUploadImageFragmentToHomeFragment())
+            view?.let {view->
+                showSnackBarMessage(view, getString(R.string.upload_successful))
+            }
         }
 
         override fun onImageUploadFailure(uploadResponse: Throwable?) {

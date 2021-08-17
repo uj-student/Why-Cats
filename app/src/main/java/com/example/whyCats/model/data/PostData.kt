@@ -1,8 +1,10 @@
 package com.example.whyCats.model.data
 
+import com.example.whyCats.model.UploadResponse
 import com.example.whyCats.model.network.NetworkRepo
 import com.example.whyCats.model.network.NetworkService
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -36,9 +38,12 @@ object PostData {
                     if (it.approved == 1) {
                         emit(it)
                         onSuccess.invoke()
+                    } else {
+                        onError.invoke()
                     }
                 }
             }.catch {
+                emit(UploadResponse())
                 onError.invoke()
             }.single()
         } catch (e: IOException) {

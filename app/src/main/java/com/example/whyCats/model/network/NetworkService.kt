@@ -27,9 +27,9 @@ interface NetworkService {
 
     @GET("images/")
     suspend fun getUserUploadHistory(
-        @Query("limit") limit: Int? = 10,
+        @Query("limit") limit: Int? = 100,
         @Query("page") page: Int? = 1,
-        @Query("order") order: String? = "DESC",
+        @Query("order") order: String? = "RANDOM",
         @Header("x-api-key") apiKey: String? = BuildConfig.API_KEY,
     ): List<UploadHistoryResponse>
 }
