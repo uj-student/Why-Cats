@@ -14,26 +14,32 @@ import androidx.navigation.findNavController
 import com.example.whyCats.BuildConfig
 import com.example.whyCats.R
 import com.example.whyCats.databinding.FragmentImageUploadBinding
+import com.example.whyCats.util.getDateTimeStamp
 import com.example.whyCats.util.showSnackBarMessage
 import com.example.whyCats.viewModel.ImageUploadViewModel
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class ImageUploadFragment : Fragment() {
 
     private val imageUploadViewModel: ImageUploadViewModel by viewModels()
     private var fragmentUploadImageBinding: FragmentImageUploadBinding? = null
-    private lateinit var currentPhotoPath: String
+    private var currentPhotoPath: String? = null
     private var photoUri: Uri? = null
 
     private val imageFromGallery =
+        // need to come back here and clean up
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
             afterImageCapture(result)
-            createImageFile()
-            photoUri = result
+            createImageFile().also { file ->
+                photoUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    file
+                )
+            }
+//            photoUri = result
         }
 
     private val takePicture =
@@ -55,6 +61,10 @@ class ImageUploadFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpListeners()
+    }
+
+    private fun setUpListeners() {
         fragmentUploadImageBinding?.takePictureButton?.setOnClickListener {
             dispatchTakePictureIntent()
         }
@@ -64,11 +74,13 @@ class ImageUploadFragment : Fragment() {
         }
 
         fragmentUploadImageBinding?.uploadImageButton?.setOnClickListener {
-            photoUri?.let {
-                showProgressDialog()
-                imageUploadViewModel.uploadCatImage(currentPhotoPath,
-                    { onUploadResponse.onSuccessfulImageUploadComplete() },
-                    { onUploadResponse.onImageUploadFailure(null)})
+            photoUri?.let { _ ->
+                currentPhotoPath?.let { photoPath ->
+                    showProgressDialog()
+                    imageUploadViewModel.uploadCatImage(photoPath,
+                        { onUploadResponse.onSuccessfulImageUploadComplete() },
+                        { onUploadResponse.onImageUploadFailure(null) })
+                }
             }
         }
     }
@@ -90,17 +102,20 @@ class ImageUploadFragment : Fragment() {
         }
     }
 
+    private fun setUriForGalleryImage() {
+
+    }
+
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val filename = "JPEG_${getDateTimeStamp()}_"
         val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         if (storageDir?.exists() == true)
             storageDir.mkdirs()
         return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
+            filename,
+            ".jpg",
+            storageDir
         ).apply {
             currentPhotoPath = absolutePath
         }
@@ -133,15 +148,18 @@ class ImageUploadFragment : Fragment() {
             fragmentUploadImageBinding?.pbNetworkCall?.visibility = View.GONE
             view?.findNavController()
                 ?.navigate(ImageUploadFragmentDirections.actionUploadImageFragmentToHomeFragment())
-            view?.let {view->
-                showSnackBarMessage(view, getString(R.string.upload_successful))
+            view?.let { _view ->
+                showSnackBarMessage(_view, getString(R.string.upload_successful))
             }
         }
 
         override fun onImageUploadFailure(uploadResponse: Throwable?) {
             fragmentUploadImageBinding?.pbNetworkCall?.visibility = View.GONE
-            view?.let {view->
-                showSnackBarMessage(view, uploadResponse?.message ?: getString(R.string.error_message))
+            view?.let { _view ->
+                showSnackBarMessage(
+                    _view,
+                    uploadResponse?.message ?: getString(R.string.error_message)
+                )
             }
             resetViews()
         }

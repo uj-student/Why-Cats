@@ -62,8 +62,8 @@ import org.junit.runner.Description
  */
 @ExperimentalCoroutinesApi
 class MainCoroutineScopeRule(val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()) :
-    TestWatcher(),
-    TestCoroutineScope by TestCoroutineScope(dispatcher) {
+    TestWatcher(){ //,
+//    TestCoroutineScope by TestCoroutineScope(dispatcher) {
     override fun starting(description: Description?) {
         super.starting(description)
         // If your codebase allows the injection of other dispatchers like
@@ -77,8 +77,9 @@ class MainCoroutineScopeRule(val dispatcher: TestCoroutineDispatcher = TestCorou
 
     override fun finished(description: Description?) {
         super.finished(description)
-        advanceUntilIdle()
-        cleanupTestCoroutines()
+//        advanceUntilIdle()
+//        cleanupTestCoroutines()
+        dispatcher.cleanupTestCoroutines()
         Dispatchers.resetMain()
     }
 }
