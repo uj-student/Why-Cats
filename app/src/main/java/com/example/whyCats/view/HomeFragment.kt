@@ -47,10 +47,10 @@ class HomeFragment : Fragment() {
         fragmentHomeBinding?.rvCat?.adapter = catAdapter.withLoadStateFooter(footerAdapter)
 
         submitData(catAdapter)
-        setUpAdapter(catAdapter)
+        setUpListeners(catAdapter)
     }
 
-    private fun setUpAdapter(adapter: CatAdapter) {
+    private fun setUpListeners(adapter: CatAdapter) {
         adapter.setOnItemClickListener(object : CatAdapter.OnItemClickListener {
             override fun onImageClick(position: Int, cardView: View) {
                 val cat = adapter.getCat(position)
@@ -60,7 +60,6 @@ class HomeFragment : Fragment() {
                     )
                 }
             }
-
         })
 
         adapter.addLoadStateListener { loadState ->

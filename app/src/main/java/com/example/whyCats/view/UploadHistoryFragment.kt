@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.whyCats.R
 import com.example.whyCats.databinding.FragmentUploadHistoryBinding
 import com.example.whyCats.model.Cat
 import com.example.whyCats.view.adapters.CatLoadStateAdapter
@@ -50,10 +49,10 @@ class UploadHistoryFragment : Fragment() {
             uploadAdapter.withLoadStateFooter(footerAdapter)
 
         submitData(uploadAdapter)
-        setUpAdapter(uploadAdapter)
+        setUpListeners(uploadAdapter)
     }
 
-    private fun setUpAdapter(adapter: UploadHistoryAdapter) {
+    private fun setUpListeners(adapter: UploadHistoryAdapter) {
         adapter.setOnItemClickListener(object : UploadHistoryAdapter.OnItemClickListener {
             override fun onImageClick(position: Int, cardView: View) {
                 val cat = adapter.getCat(position)
@@ -64,13 +63,12 @@ class UploadHistoryFragment : Fragment() {
                     height = cat?.height ?: 0,
                     breeds = null
                 )
-                // thought it was a good idea to develop have a details page, bit the info isn't all that useful
+                // thought it was a good idea to have a details page, but the info isn't all that useful
 //                cardView.findNavController().navigate(
 //                    UploadHistoryFragmentDirections.actionUploadHistoryFragmentToCatDetailFragment(
 //                        newCatObject
 //                    )
 //                )
-
             }
         })
 
@@ -86,8 +84,7 @@ class UploadHistoryFragment : Fragment() {
 
     private fun submitData(adapter: UploadHistoryAdapter) {
         lifecycleScope.launchWhenStarted {
-            userUploadHistoryViewModel.uploadHistory.collectLatest {
-                    pagedData ->
+            userUploadHistoryViewModel.uploadHistory.collectLatest { pagedData ->
                 adapter.submitData(pagedData)
             }
         }

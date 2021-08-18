@@ -1,5 +1,6 @@
 package com.example.whyCats.view.adapters
 
+import android.text.TextUtils.substring
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,11 +43,13 @@ class UploadHistoryAdapter :
         }
 
         fun bindCat(catData: UploadHistoryResponse) {
-            var imageName = catData.uploadedFileName
-            imageName = imageName.substring(imageName.lastIndexOf("/") + 1)
+            val imageName = (catData.uploadedFileName).run {
+                 substring(this.lastIndexOf("/") + 1)
+            }
 
-            var imageUploadTimeStamp = catData.createdAt
-            imageUploadTimeStamp = imageUploadTimeStamp.replaceAfter(".", "")
+            val imageUploadTimeStamp = (catData.createdAt).run {
+                this.replaceAfter(".", "")
+            }
             with(binding) {
                 imgCat.loadImage(catData.url)
                 catName.text = imageName

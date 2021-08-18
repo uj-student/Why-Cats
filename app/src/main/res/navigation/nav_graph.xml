@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.whyCats.view.HomeFragment"
-        android:label="WhyCats"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_uploadImageFragment"
@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/uploadImageFragment"
         android:name="com.example.whyCats.view.ImageUploadFragment"
-        android:label="Upload Image"
+        android:label="@string/cat_image_upload_menu"
         tools:layout="@layout/fragment_image_upload" >
         <action
             android:id="@+id/action_uploadImageFragment_to_homeFragment"
@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/catDetailFragment"
         android:name="com.example.whyCats.view.CatDetailFragment"
-        android:label="Cat Preview"
+        android:label="@string/cat_preview_menu"
         tools:layout="@layout/fragment_cat_detail">
         <argument
             android:name="catData"
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/uploadHistoryFragment"
         android:name="com.example.whyCats.view.UploadHistoryFragment"
-        android:label="My Uploads"
+        android:label="@string/my_uploads_menu"
         tools:layout="@layout/fragment_upload_history" >
         <action
             android:id="@+id/action_uploadHistoryFragment_to_catDetailFragment"
