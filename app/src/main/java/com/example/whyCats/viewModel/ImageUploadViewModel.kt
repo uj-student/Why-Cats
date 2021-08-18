@@ -19,4 +19,13 @@ class ImageUploadViewModel : ViewModel() {
                 { onUploadFail.invoke() })
         }
     }
+
+    fun deleteTempFile(filePath: String) {
+        viewModelScope.launch {
+            val fileToDelete = File(filePath)
+            if (fileToDelete.exists()) {
+                fileToDelete.delete()
+            }
+        }
+    }
 }

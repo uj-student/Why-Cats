@@ -1,12 +1,21 @@
 package com.example.whyCats.view
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,15 +40,13 @@ class ImageUploadFragment : Fragment() {
     private val imageFromGallery =
         // need to come back here and clean up
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+            photoUri = result
             afterImageCapture(result)
-            createImageFile().also { file ->
-                photoUri = FileProvider.getUriForFile(
-                    requireContext(),
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    file
-                )
-            }
-//            photoUri = result
+
+            val capturedImage = getCapturedImage(result)
+            val selectedFile = bitmapToFile(capturedImage, getFilename())
+
+            currentPhotoPath = selectedFile?.absolutePath
         }
 
     private val takePicture =
@@ -61,6 +68,7 @@ class ImageUploadFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        verifyStoragePermissions(requireActivity())
         setUpListeners()
     }
 
@@ -70,17 +78,15 @@ class ImageUploadFragment : Fragment() {
         }
 
         fragmentUploadImageBinding?.getFromGalleryImageButton?.setOnClickListener {
-            imageFromGallery.launch("image/*")
+                imageFromGallery.launch("image/*")
         }
 
         fragmentUploadImageBinding?.uploadImageButton?.setOnClickListener {
-            photoUri?.let { _ ->
-                currentPhotoPath?.let { photoPath ->
-                    showProgressDialog()
-                    imageUploadViewModel.uploadCatImage(photoPath,
-                        { onUploadResponse.onSuccessfulImageUploadComplete() },
-                        { onUploadResponse.onImageUploadFailure(null) })
-                }
+            currentPhotoPath?.let { photoPath ->
+                showProgressDialog()
+                imageUploadViewModel.uploadCatImage(photoPath,
+                    { onUploadResponse.onSuccessfulImageUploadComplete() },
+                    { onUploadResponse.onImageUploadFailure(null) })
             }
         }
     }
@@ -98,28 +104,87 @@ class ImageUploadFragment : Fragment() {
                 BuildConfig.APPLICATION_ID + ".provider",
                 file
             )
+            println("Hello1 $photoUri")
             takePicture.launch(photoUri)
         }
     }
 
-    private fun setUriForGalleryImage() {
+    @SuppressLint("NewApi")
+    private fun getCapturedImage(selectedPhotoUri: Uri): Bitmap {
+        val bitmap = when {
+            Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(
+                requireContext().contentResolver,
+                selectedPhotoUri
+            )
+            else -> {
+                val source = ImageDecoder.createSource(
+                    requireContext().contentResolver,
+                    selectedPhotoUri
+                )
+                ImageDecoder.decodeBitmap(source)
+            }
+        }
 
+        return Bitmap.createScaledBitmap(bitmap, 80, 80, true)
+    }
+
+    private fun bitmapToFile(bitmap: Bitmap, fileNameToSave: String): File? {
+        //create a file to write bitmap data
+        var file: File? = null
+        return try {
+            file = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            if (!file?.exists()!!)
+                file.mkdirs()
+
+            val tempFile = File.createTempFile(
+                fileNameToSave,
+                ".jpg",
+                file
+            ).apply {
+                currentPhotoPath = absolutePath
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            file
+        }
+    }
+
+    private val REQUEST_EXTERNAL_STORAGE = 1
+    private val PERMISSIONS_STORAGE = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
+    private fun verifyStoragePermissions(activity: Activity) {
+        val permission = ActivityCompat.checkSelfPermission(
+            activity,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                activity,
+                PERMISSIONS_STORAGE,
+                REQUEST_EXTERNAL_STORAGE
+            )
+        }
     }
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val filename = "JPEG_${getDateTimeStamp()}_"
         val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         if (storageDir?.exists() == true)
             storageDir.mkdirs()
         return File.createTempFile(
-            filename,
+            getFilename(),
             ".jpg",
             storageDir
         ).apply {
             currentPhotoPath = absolutePath
         }
     }
+
+    private val getFilename: () -> String = { "JPEG_${getDateTimeStamp()}_" }
 
     private fun afterImageCapture(imageUri: Uri) {
         fragmentUploadImageBinding?.imageCaptureContainer?.visibility = View.GONE
@@ -151,6 +216,7 @@ class ImageUploadFragment : Fragment() {
             view?.let { _view ->
                 showSnackBarMessage(_view, getString(R.string.upload_successful))
             }
+            deleteImageUploadAttempt()
         }
 
         override fun onImageUploadFailure(uploadResponse: Throwable?) {
@@ -161,7 +227,14 @@ class ImageUploadFragment : Fragment() {
                     uploadResponse?.message ?: getString(R.string.error_message)
                 )
             }
+            deleteImageUploadAttempt()
             resetViews()
+        }
+    }
+
+    fun deleteImageUploadAttempt() {
+        currentPhotoPath?.let { path ->
+            imageUploadViewModel.deleteTempFile(path)
         }
     }
 
