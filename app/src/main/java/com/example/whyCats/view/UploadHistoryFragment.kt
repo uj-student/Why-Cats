@@ -63,7 +63,7 @@ class UploadHistoryFragment : Fragment() {
                     height = cat?.height ?: 0,
                     breeds = null
                 )
-                // thought it was a good idea to have a details page, bit the info isn't all that useful
+                // thought it was a good idea to have a details page, but the info isn't all that useful
 //                cardView.findNavController().navigate(
 //                    UploadHistoryFragmentDirections.actionUploadHistoryFragmentToCatDetailFragment(
 //                        newCatObject
